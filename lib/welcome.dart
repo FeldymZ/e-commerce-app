@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -9,7 +10,7 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-  /*Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -35,12 +36,17 @@ class _WelcomeState extends State<Welcome> {
         SnackBar(content: Text("Erreur: $e")),
       );
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: signInWithGoogle,
+          child: null,
+        ),
+      ),
     );
   }
 }
