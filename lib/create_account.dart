@@ -1,82 +1,21 @@
-import 'package:e_commerce/create_account.dart';
-import 'package:e_commerce/profile_page.dart';
+import 'package:e_commerce/welcome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class Welcome extends StatefulWidget {
-  const Welcome({super.key});
+class CreateAccount extends StatefulWidget {
+  const CreateAccount({super.key});
 
   @override
-  State<Welcome> createState() => _WelcomeState();
+  State<CreateAccount> createState() => _CreateAccountState();
 }
 
-class _WelcomeState extends State<Welcome> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
+class _CreateAccountState extends State<CreateAccount> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool obscureText = true;
 
-  // Validation de l'email
-  bool isValidEmail(String email) {
-    RegExp emailRegExp =
-        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    return emailRegExp.hasMatch(email);
-  }
-
-  // Validation du mot de passe
-  bool isValidPassword(String password) {
-    return password.length >= 6;
-  }
-
-  // Connexion avec email et mot de passe
-  Future<void> signInWithEmail() async {
-    if (!isValidEmail(emailController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Email invalide")),
-      );
-      return;
-    }
-    if (!isValidPassword(passwordController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text("Le mot de passe doit avoir au moins 6 caractères")),
-      );
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-
-      // Si la connexion réussie, redirection vers une autre page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                ProfilePage()), // Page d'accueil après connexion
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Connexion réussie !")),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erreur: $e")),
-      );
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  // Connexion avec Google
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -93,19 +32,44 @@ class _WelcomeState extends State<Welcome> {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Afficher un message de succès et rediriger l'utilisateur
+      // Afficher un message de succès
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Connexion réussie avec Google !")),
+        const SnackBar(content: Text("Connexion réussie !")),
+      );
+    } catch (e) {
+      // Afficher l'erreur à l'utilisateur
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erreur: $e")),
+      );
+    }
+  }
+
+  final TextEditingController nameController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> signUpWithEmail() async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
 
+      // Mise à jour du profil avec le nom
+      await userCredential.user?.updateDisplayName(nameController.text.trim());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Compte créé avec succès !")),
+      );
+
+      // Rediriger vers la page d'accueil ou de connexion
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-            builder: (context) => HomePage()), // Page d'accueil après connexion
+        MaterialPageRoute(builder: (context) => Welcome()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erreur: $e")),
+        SnackBar(content: Text("Erreur : $e")),
       );
     }
   }
@@ -116,93 +80,154 @@ class _WelcomeState extends State<Welcome> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
-            SizedBox(height: 140),
+            SizedBox(height: 100.h),
             Center(
               child: Text(
-                'Sign In',
+                'Create Account',
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 30.sp,
                     fontWeight: FontWeight.bold,
                     letterSpacing: -1),
               ),
             ),
             Center(
-              child: Text("Hi! Welcome back, you've been missed"),
+              child: Text(
+                "Fill your information below or register\nwith your social media account",
+                textAlign: TextAlign.center,
+              ),
             ),
-            SizedBox(height: 70),
+            SizedBox(height: 30.h),
+            Text(
+              'Name',
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
+                filled: true,
+                fillColor: Colors.grey[150],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              style: TextStyle(fontSize: 16.sp, color: Colors.black),
+              cursorColor: Color(0xff3c5a5d),
+            ),
+            SizedBox(height: 20.h),
             Text(
               'Email',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: emailController,
               decoration: InputDecoration(
                 hintStyle: TextStyle(color: Colors.grey),
                 filled: true,
-                fillColor: Colors.grey[150],
+                fillColor: Colors.grey[150], // Arrière-plan
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide.none, // Supprime la bordure de base
                 ),
               ),
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(fontSize: 16.sp, color: Colors.black),
               cursorColor: Color(0xff3c5a5d),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Text(
               'Password',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: passwordController,
-              obscureText: true,
+              obscureText: obscureText,
               decoration: InputDecoration(
                 hintStyle: TextStyle(color: Colors.grey),
                 filled: true,
-                fillColor: Colors.grey[150],
+                fillColor: Colors.grey[150], // Arrière-plan
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide.none, // Supprime la bordure de base
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      obscureText = !obscureText; // Changer l'état
+                    });
+                  },
                 ),
               ),
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(fontSize: 16.sp, color: Colors.black),
               cursorColor: Color(0xff3c5a5d),
             ),
-            SizedBox(height: 10),
-            Text(
-              'Forgot Password?',
-              style: TextStyle(
-                  color: Colors.blue,
-                  letterSpacing: -0.5,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline),
-              textAlign: TextAlign.end,
+            SizedBox(height: 10.h),
+            Row(
+              children: [
+                Checkbox(value: false, onChanged: (_) {}),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Color(0xff3c5a5d),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Agree with',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: ' ',
+                      ),
+                      WidgetSpan(
+                        child: InkWell(
+                          onTap: () {
+                            // Redirection vers la page de connexion
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateAccount()),
+                            );
+                          },
+                          child: Text(
+                            'Terms & Conditions',
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              color: Color(0xff3c5a5d),
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Center(
                 child: ElevatedButton(
-                    onPressed: isLoading
-                        ? null
-                        : signInWithEmail, // Désactiver pendant le chargement
+                    onPressed: () {
+                      signUpWithEmail();
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff3c5a5d),
                       padding:
                           EdgeInsets.symmetric(horizontal: 150, vertical: 12),
                     ),
-                    child: isLoading
-                        ? CircularProgressIndicator(
-                            color: Colors.white,
-                          )
-                        : Text(
-                            "Sign In",
-                            style: TextStyle(color: Colors.white),
-                          ))),
-            SizedBox(height: 30),
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(color: Colors.white),
+                    ))),
+            SizedBox(height: 30.h),
             Padding(
               padding: const EdgeInsets.only(left: 40.0, right: 40.0),
               child: Row(
@@ -229,7 +254,7 @@ class _WelcomeState extends State<Welcome> {
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 30.h),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -250,7 +275,7 @@ class _WelcomeState extends State<Welcome> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   InkWell(
                     onTap: signInWithGoogle,
                     child: Container(
@@ -270,7 +295,7 @@ class _WelcomeState extends State<Welcome> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Container(
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -290,12 +315,12 @@ class _WelcomeState extends State<Welcome> {
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 30.h),
             Center(
               child: RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     color: Color(0xff3c5a5d),
                   ),
                   children: [
@@ -309,14 +334,14 @@ class _WelcomeState extends State<Welcome> {
                     WidgetSpan(
                       child: InkWell(
                         onTap: () {
+                          // Redirection vers la page de connexion
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateAccount()),
+                            MaterialPageRoute(builder: (context) => Welcome()),
                           );
                         },
                         child: Text(
-                          'Sign Up',
+                          'Sign In',
                           style: TextStyle(
                             color: Color(0xff3c5a5d),
                             decoration: TextDecoration.underline,
@@ -331,16 +356,6 @@ class _WelcomeState extends State<Welcome> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Home Page")),
-      body: Center(child: Text("Bienvenue dans l'application !")),
     );
   }
 }
