@@ -1,7 +1,6 @@
 import 'package:e_commerce/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Intro2 extends StatefulWidget {
@@ -268,6 +267,7 @@ class ClipHolder extends CustomClipper<Path> {
   }
 }
 
+// ignore: use_key_in_widget_constructors
 class NextPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:e_commerce/screens/all_product.dart';
+import 'package:e_commerce/screens/categories_grid.dart';
 import 'package:e_commerce/screens/one_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +19,7 @@ class HommePage extends StatefulWidget {
 class _HommePageState extends State<HommePage> {
   final PageController _pageController = PageController();
   PageController pageController = PageController();
+  Timer? _timer;
 
   final List<Map<String, dynamic>> categories = [
     {"icon": Icons.chair, "label": "Sofa"},
@@ -25,11 +27,9 @@ class _HommePageState extends State<HommePage> {
     {"icon": Icons.lightbulb, "label": "Lamp"},
     {"icon": Icons.kitchen, "label": "Cupboard"},
   ];
-
   int hours = 2;
   int minutes = 12;
   int seconds = 56;
-  String selectedCategory = "Newest";
 
   @override
   void initState() {
@@ -38,25 +38,28 @@ class _HommePageState extends State<HommePage> {
   }
 
   void startCountdown() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (seconds > 0) {
-        setState(() => seconds--);
-      } else {
-        if (minutes > 0) {
-          setState(() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      setState(() {
+        if (seconds > 0) {
+          seconds--;
+        } else {
+          if (minutes > 0) {
             minutes--;
             seconds = 59;
-          });
-        } else if (hours > 0) {
-          setState(() {
+          } else if (hours > 0) {
             hours--;
             minutes = 59;
             seconds = 59;
-          });
-        } else {
-          timer.cancel();
+          } else {
+            timer.cancel();
+          }
         }
-      }
+      });
     });
   }
 
@@ -168,7 +171,7 @@ class _HommePageState extends State<HommePage> {
                       title: "Winter Sale",
                       subtitle: "Up to 70% off\non selected items",
                       buttonText: "Explore",
-                      imageUrl: "assets/img/pngegg (10).png",
+                      imageUrl: "assets/img/Gymnastics-PNG-Picture.png",
                     ),
                     _buildPromoCard(
                       title: "Winter Sale",
@@ -217,7 +220,13 @@ class _HommePageState extends State<HommePage> {
                     ),
                     Spacer(),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CategoriesPage()),
+                          );
+                        },
                         child: Text(
                           'See All',
                           style: TextStyle(color: Color(0xff3c5a5d)),

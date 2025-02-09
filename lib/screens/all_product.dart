@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/classes/product_items.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AllProduct extends StatefulWidget {
   const AllProduct({super.key});
@@ -77,13 +78,13 @@ class _AllProductState extends State<AllProduct> {
                       Stack(
                         children: [
                           Container(
-                            height: 180,
-                            width: 180,
+                            height: 180.h,
+                            width: 180.w,
                             decoration: BoxDecoration(
                                 color: Colors.grey.shade200,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Image.network(item.image,
-                                height: 50,
+                                height: 50.h,
                                 width: double.infinity,
                                 fit: BoxFit.contain),
                           ),

@@ -2,6 +2,7 @@ import 'package:e_commerce/create_account.dart';
 import 'package:e_commerce/profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Welcome extends StatefulWidget {
@@ -116,16 +117,14 @@ class _WelcomeState extends State<Welcome> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
-            SizedBox(height: 140),
+            SizedBox(height: 120.h),
             Center(
               child: Text(
                 'Sign In',
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 30.sp,
                     fontWeight: FontWeight.bold,
                     letterSpacing: -1),
               ),
@@ -133,7 +132,7 @@ class _WelcomeState extends State<Welcome> {
             Center(
               child: Text("Hi! Welcome back, you've been missed"),
             ),
-            SizedBox(height: 70),
+            SizedBox(height: 70.h),
             Text(
               'Email',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -149,7 +148,7 @@ class _WelcomeState extends State<Welcome> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(fontSize: 16.sp, color: Colors.black),
               cursorColor: Color(0xff3c5a5d),
             ),
             SizedBox(height: 20),
@@ -169,10 +168,10 @@ class _WelcomeState extends State<Welcome> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(fontSize: 16.sp, color: Colors.black),
               cursorColor: Color(0xff3c5a5d),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Text(
               'Forgot Password?',
               style: TextStyle(
@@ -191,8 +190,8 @@ class _WelcomeState extends State<Welcome> {
                         : signInWithEmail, // Désactiver pendant le chargement
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff3c5a5d),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 150, vertical: 12),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 145.w, vertical: 15.h),
                     ),
                     child: isLoading
                         ? CircularProgressIndicator(
@@ -200,7 +199,9 @@ class _WelcomeState extends State<Welcome> {
                           )
                         : Text(
                             "Sign In",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ))),
             SizedBox(height: 30),
             Padding(

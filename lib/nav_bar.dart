@@ -101,7 +101,7 @@ class BagPage extends StatelessWidget {
 class HeartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Page du Coeur"));
+    return HommePage();
   }
 }
 

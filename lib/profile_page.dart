@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce/nav_bar.dart';
 import 'package:e_commerce/screens/homme_page.dart';
 import 'package:e_commerce/welcome.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -188,14 +189,17 @@ class _ProfilePageState extends State<ProfilePage> {
             DropdownButtonFormField<String>(
               value: selectedGender,
               decoration: InputDecoration(
-                labelText: "Gender",
+                hintText: "Gender",
                 filled: true,
                 fillColor: Colors.grey.shade100,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none),
               ),
-              items: ["Male", "Female", "Other"].map((String gender) {
+              items: [
+                "Male",
+                "Female",
+              ].map((String gender) {
                 return DropdownMenuItem<String>(
                   value: gender,
                   child: Text(gender),
@@ -224,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Fluttertoast.showToast(msg: 'Profil mis à jour avec succès!');
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HommePage()),
+                  MaterialPageRoute(builder: (context) => CustomNavBar()),
                 );
               },
               child: Text('Save Profile'),

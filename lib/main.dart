@@ -1,6 +1,6 @@
 import 'package:e_commerce/intro/intro1.dart';
 import 'package:e_commerce/nav_bar.dart';
-import 'package:e_commerce/screens/homme_page.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             textTheme: GoogleFonts.interTextTheme(),
           ),
-          home: CustomNavBar(),
+          home: Intro1(),
         );
       },
     );
