@@ -108,7 +108,7 @@ class HeartPage extends StatelessWidget {
 class MessagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Page des Messages"));
+    return Center(child: Text("Messages"));
   }
 }
 
